@@ -10,6 +10,8 @@ import { ActivityIndicator, Avatar, Button, MD2Colors } from 'react-native-paper
 import dayjs from 'dayjs';
 import { useJwtToken } from '@/hooks/useJwtToken';
 import { Link } from 'expo-router';
+import { IProgress } from '@/types';
+import { Dictionary } from '@/constants/Dict';
 
 export default function HomeScreen() {
   const token = useAuthStore((state) => state.token);
@@ -17,7 +19,9 @@ export default function HomeScreen() {
   const isAdmin = sub ? sub == 1 : false;
   const isAuth = !!token; 
   const getUserInfoFunc = () =>api.getUserInfo(token).then((res) => res.json());
-  const {data, isLoading} = useQuery({ queryKey: ['about-user'], queryFn: getUserInfoFunc })
+  const {data, isLoading} = useQuery({ queryKey: ['about-user'], queryFn: getUserInfoFunc });
+  const getUserProgressFunc = ()=>api.getUserCourseProgress(token).then((res) => res.json());
+  const {data: userProgress } = useQuery({ queryKey: ['about-progress'], queryFn: getUserProgressFunc, enabled: !isAdmin, gcTime:0 });
 
   return isAuth ? (
     <ParallaxScrollView
@@ -58,24 +62,28 @@ export default function HomeScreen() {
           </Link>
         </ThemedView>
       )}
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this
-          starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{" "}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText>{" "}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{" "}
-          directory. This will move the current{" "}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+      {Boolean(userProgress?.length)&& !isAdmin && (
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText type="subtitle">Мои курсы</ThemedText>
+          {userProgress.map((elem: IProgress) => (
+            <ThemedView key={elem.id}>
+              <ThemedText type="defaultSemiBold">{elem.course.name}</ThemedText>
+              <ThemedText>{`статус: ${Dictionary[elem.status]}`}</ThemedText>
+              {elem.status !== "completed" && (
+                <Link
+                  style={{ marginTop: 8 }}
+                  href={`/${elem.course.id}`}
+                  asChild
+                >
+                  <Button style={{ height: 40 }} mode="outlined">
+                    Перейти к курсу
+                  </Button>
+                </Link>
+              )}
+            </ThemedView>
+          ))}
+        </ThemedView>
+      )}
     </ParallaxScrollView>
   ) : (
     <Auth />

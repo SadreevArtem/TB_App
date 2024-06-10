@@ -9,7 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, Stack, useNavigation } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
-import { ActivityIndicator, Avatar, Button, Icon, MD2Colors, MD3Colors } from "react-native-paper";
+import { ActivityIndicator, Avatar, Button, Icon, IconButton, MD2Colors, MD3Colors } from "react-native-paper";
 
 export default function Users(){
     const token = useAuthStore((state) => state.token);
@@ -45,7 +45,12 @@ export default function Users(){
         >
           <ThemedView style={styles.container}>
             <Link href="/" asChild>
-              <Button mode="outlined">{"<"}</Button>
+              <IconButton
+                icon="chevron-left"
+                mode="outlined"
+                iconColor={MD3Colors.primary50}
+                size={20}
+              />
             </Link>
             <ThemedText type="defaultSemiBold">Пользователи</ThemedText>
           </ThemedView>
@@ -62,8 +67,6 @@ export default function Users(){
                     <Button
                       style={{ marginLeft: "auto" }}
                       onPress={() => {
-                        console.log(elem.id);
-
                         mutation.mutate(elem.id);
                       }}
                     >
