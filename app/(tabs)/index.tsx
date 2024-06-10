@@ -4,35 +4,60 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useAuthStore } from '@/stores/auth-store';
 import { Auth } from '@/components/Auth';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/Api/Api';
+import { ActivityIndicator, Avatar, Button, MD2Colors } from 'react-native-paper';
+import dayjs from 'dayjs';
+import { useJwtToken } from '@/hooks/useJwtToken';
+import { Link } from 'expo-router';
 
 export default function HomeScreen() {
-  const isAuth = !!useAuthStore((state) => state.token)
+  const token = useAuthStore((state) => state.token);
+  const {sub} = useJwtToken();
+  const isAdmin = sub ? sub == 1 : false;
+  const isAuth = !!token; 
+  const getUserInfoFunc = () =>api.getUserInfo(token).then((res) => res.json());
+  const {data, isLoading} = useQuery({ queryKey: ['about-user'], queryFn: getUserInfoFunc })
 
   return isAuth ? (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
       headerImage={
         <Image
-          source={require("@/assets/images/partial-react-logo.png")}
+          source={require("@/assets/images/crane.png")}
           style={styles.reactLogo}
         />
       }
     >
+      {isLoading && (
+        <ActivityIndicator animating={true} color={MD2Colors.red800} />
+      )}
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Личный кабинет</ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+        <ThemedText type="subtitle">{`Пользователь - ${data?.username}`}</ThemedText>
+        <Avatar.Image size={96} source={{ uri: data?.avatar }} />
         <ThemedText>
-          Edit{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
-          to see changes. Press{" "}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: "cmd + d", android: "cmd + m" })}
-          </ThemedText>{" "}
-          to open developer tools.
+          <ThemedText type="defaultSemiBold">О себе:</ThemedText>{" "}
+          {`${data?.about}`}
+        </ThemedText>
+        <ThemedText>
+          <ThemedText type="defaultSemiBold">E-mail:</ThemedText>{" "}
+          {`${data?.email}`}
+        </ThemedText>
+        <ThemedText>
+          <ThemedText type="defaultSemiBold">На платформе:</ThemedText>{" "}
+          {`с ${dayjs(data?.createdAt).locale("ru").format("DD.MM.YYYY")}`}
         </ThemedText>
       </ThemedView>
+      {isAdmin && (
+        <ThemedView style={styles.stepContainer}>
+          <Link href="/users" asChild>
+            <Button mode="outlined">Управление пользователями</Button>
+          </Link>
+        </ThemedView>
+      )}
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 2: Explore</ThemedText>
         <ThemedText>
@@ -68,10 +93,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reactLogo: {
-    height: 178,
-    width: 290,
+    height: '100%',
+    width: '100%',
     bottom: 0,
     left: 0,
+    top:0,
     position: "absolute",
   },
 });
