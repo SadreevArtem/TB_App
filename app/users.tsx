@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, Stack, useNavigation } from "expo-router";
 import { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import { ActivityIndicator, Avatar, Button, Icon, IconButton, MD2Colors, MD3Colors } from "react-native-paper";
 
 export default function Users(){
@@ -41,7 +41,12 @@ export default function Users(){
         <Stack.Screen options={{ title: "Пользователи" }} />
         <ParallaxScrollView
           headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
-          headerImage={<Ionicons size={310} name="people-outline" />}
+          headerImage={
+            <Image
+              source={require("@/assets/images/users.png")}
+              style={styles.reactLogo}
+            />
+          }
         >
           <ThemedView style={styles.container}>
             <Link href="/" asChild>
@@ -96,6 +101,14 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         gap: 12
+    },
+    reactLogo: {
+      height: '100%',
+      width: '100%',
+      bottom: 0,
+      left: 0,
+      top:0,
+      position: "absolute",
     },
     userRow: {
         display: 'flex',

@@ -24,7 +24,7 @@ export interface ILesson {
   course: ICourse;
   title: string;
   content: string;
-  orderNumber: string;
+  orderNumber: number;
   userProgress: IProgress;
 }
 

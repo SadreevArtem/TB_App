@@ -1,21 +1,21 @@
 import { Tabs, router } from 'expo-router';
 import React from 'react';
-
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useAuthStore } from '@/stores/auth-store';
-import { useJwtToken } from '@/hooks/useJwtToken';
+
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const setToken = useAuthStore((state) => state.setToken)
-
+  const {token, setToken} = useAuthStore();
+  const isAuth = !!token;
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
+        tabBarStyle: {display:isAuth?"flex": "none"}
       }}
     >
       <Tabs.Screen

@@ -6,6 +6,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/Api/Api";
 import { useAuthStore } from "@/stores/auth-store";
 import { Button, TextInput } from "react-native-paper";
+import { useEffect } from "react";
+import { useNavigation } from "expo-router";
 
 interface IAuth {
     username: string
@@ -23,7 +25,7 @@ export function Auth (){
         password: "",
       },
     });
-      const setToken = useAuthStore((state) => state.setToken)
+      const  setToken = useAuthStore((state)=> state.setToken)
       const queryClient = useQueryClient()
       const signInFunc = (input: IAuth)=> api.signInRequest(input).then((res) => res.json()).then((res)=> {
         setToken(res.access_token);
@@ -37,6 +39,7 @@ export function Auth (){
       const onSubmit = async (data: IAuth) => {
         await mutation.mutate({ ...data });
       };
+
     return (
       <ThemedView style={styles.authWrapper}>
         <ThemedText type="title">Авторизация</ThemedText>

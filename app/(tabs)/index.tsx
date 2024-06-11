@@ -12,6 +12,7 @@ import { useJwtToken } from '@/hooks/useJwtToken';
 import { Link } from 'expo-router';
 import { IProgress } from '@/types';
 import { Dictionary } from '@/constants/Dict';
+import { ExternalLink } from '@/components/ExternalLink';
 
 export default function HomeScreen() {
   const token = useAuthStore((state) => state.token);
@@ -69,6 +70,7 @@ export default function HomeScreen() {
             <ThemedView key={elem.id}>
               <ThemedText type="defaultSemiBold">{elem.course.name}</ThemedText>
               <ThemedText>{`статус: ${Dictionary[elem.status]}`}</ThemedText>
+              {elem.status==='completed' && <ExternalLink href="https://ab-dpo.ru/upload/medialibrary/ef5/pey5l29z2figl4l2gcbix7716nprjb0k.jpg"><ThemedText type="link">Загрузить сертификат</ThemedText></ExternalLink>}
               {elem.status !== "completed" && (
                 <Link
                   style={{ marginTop: 8 }}

@@ -1,5 +1,5 @@
 export const Dictionary = {
     in_progress: "В процессе", 
-     completed: "Завершен",
+     completed: "Успешно завершен",
      not_started: "Не начат"
 }

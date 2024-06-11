@@ -18,7 +18,6 @@ export default function TabTwoScreen() {
     queryKey: ["all-courses"],
     queryFn: getAllCoursesFunc,
   });
-  console.log(data);
   
   return (
     <ParallaxScrollView
