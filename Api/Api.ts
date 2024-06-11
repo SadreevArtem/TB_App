@@ -15,6 +15,14 @@ class API {
       },
       body: JSON.stringify(input),
     });
+    signUpRequest = (input: { username: string; password: string; email: string }) =>
+      fetch(`${this.baseUrl}/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(input),
+      });
 
   getUserInfo = (token: string) =>
     fetch(`${this.baseUrl}/users/me`, {
